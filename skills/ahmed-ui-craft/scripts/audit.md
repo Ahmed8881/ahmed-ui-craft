@@ -60,6 +60,7 @@ Then measure contrast in every theme. Do not copy ratios from comments; compute 
 ```bash
 node scripts/check-tokens.mjs styles/tokens.css        # or the .html file with inline tokens
 node scripts/contrast.mjs "oklch(46% 0.016 60)" "#fbf8f3"   # one-off pair, e.g. a chart color
+node scripts/palette.mjs --hue 60 --accent 30                # failing palette? regenerate one that passes
 ```
 
 (Path is relative to this skill's folder. Accepts `#hex` and `oklch()`. Alpha is ignored:

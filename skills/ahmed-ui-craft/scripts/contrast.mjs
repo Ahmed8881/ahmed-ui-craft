@@ -6,6 +6,20 @@ import { pathToFileURL } from "node:url";
 
 const lin = (v) => (v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4);
 
+// OKLCH -> linear sRGB, unclamped (values outside 0..1 mean out of gamut)
+export function oklchToLinear(L, C, H) {
+  const h = (H * Math.PI) / 180;
+  const a = C * Math.cos(h), b = C * Math.sin(h);
+  const l = (L + 0.3963377774 * a + 0.2158037573 * b) ** 3;
+  const m = (L - 0.1055613458 * a - 0.0638541728 * b) ** 3;
+  const q = (L - 0.0894841775 * a - 1.291485548 * b) ** 3;
+  return [
+    4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * q,
+    -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * q,
+    -0.0041960863 * l - 0.7034186147 * m + 1.707614701 * q,
+  ];
+}
+
 function toLinearRgb(input) {
   const s = input.trim().toLowerCase();
   const hex = s.match(/^#([0-9a-f]{3}|[0-9a-f]{6})$/);
@@ -15,17 +29,8 @@ function toLinearRgb(input) {
   }
   const ok = s.match(/^oklch\(\s*([\d.]+)(%?)\s+([\d.]+)\s+([\d.]+)(?:deg)?\s*(?:\/\s*[\d.%]+\s*)?\)$/);
   if (ok) {
-    const L = ok[2] ? ok[1] / 100 : +ok[1];
-    const h = (ok[4] * Math.PI) / 180;
-    const a = ok[3] * Math.cos(h), b = ok[3] * Math.sin(h);
-    const l = (L + 0.3963377774 * a + 0.2158037573 * b) ** 3;
-    const m = (L - 0.1055613458 * a - 0.0638541728 * b) ** 3;
-    const q = (L - 0.0894841775 * a - 1.291485548 * b) ** 3;
-    return [
-      4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * q,
-      -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * q,
-      -0.0041960863 * l - 0.7034186147 * m + 1.707614701 * q,
-    ].map((x) => Math.min(1, Math.max(0, x))); // shortcut: clamps out-of-gamut instead of gamut-mapping
+    // shortcut: clamps out-of-gamut instead of gamut-mapping; palette.mjs keeps colors in gamut
+    return oklchToLinear(ok[2] ? ok[1] / 100 : +ok[1], +ok[3], +ok[4]).map((x) => Math.min(1, Math.max(0, x)));
   }
   throw new Error(`Unsupported color "${input}". Use #hex or oklch(L% C H).`);
 }

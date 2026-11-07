@@ -89,6 +89,16 @@ starter tokens made a login form and a pricing page for unrelated products look
 identical. That is a new default, which is the problem this skill exists to fix.
 Keep them only if the direction really is warm editorial with a red-orange accent.
 
+Fastest way to a new, accessible palette: generate it, then paste it over the color
+tokens in block 2.
+
+```bash
+node scripts/palette.mjs --hue 250 --accent 130 --dark-first   # slate neutrals, lime accent
+```
+
+`--hue` tints the neutrals (use the brand hue), `--accent` is the accent hue. Every
+text/background pair is solved to pass WCAG AA in light and dark before it prints.
+
 For dark-first directions (monitoring dashboards, developer tools, luxury night
 themes), set `:root { color-scheme: dark; }` so dark is the default and light is opt-in.
 

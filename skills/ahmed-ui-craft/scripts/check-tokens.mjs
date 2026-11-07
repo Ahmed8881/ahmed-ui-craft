@@ -4,6 +4,7 @@
 // Usage: node check-tokens.mjs assets/tokens.css [more.css ...]
 //        node check-tokens.mjs --test
 import { readFileSync } from "node:fs";
+import { pathToFileURL } from "node:url";
 import { contrast } from "./contrast.mjs";
 
 // [foreground, background, minimum ratio, why]
@@ -76,8 +77,11 @@ export function check(css) {
   return rows;
 }
 
-const args = process.argv.slice(2);
-if (args[0] === "--test") {
+const isMain = import.meta.url === pathToFileURL(process.argv[1] ?? "").href;
+const args = isMain ? process.argv.slice(2) : [null];
+if (!isMain) {
+  // imported as a module: no CLI
+} else if (args[0] === "--test") {
   const css = `:root{--x:#000;--y:#fff;--color-text:light-dark(var(--x),var(--y));--color-bg:light-dark(var(--y), #000)}`;
   const r = check(css);
   console.assert(r.length === 2 && r.every((x) => Math.abs(x.ratio - 21) < 0.01), "light-dark resolves per theme");

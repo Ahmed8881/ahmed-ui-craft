@@ -28,6 +28,10 @@ Steps:
 4. Status colors (success, warning, danger) are separate from the accent. Never use the
    brand red as the error red if users will confuse "important" with "broken".
 
+Shortcut: `node scripts/palette.mjs --hue <neutral hue> --accent <accent hue>` runs steps 2-4
+and solves each token's lightness so every pair passes AA in both themes. Tune the output by hand,
+then re-check with `scripts/check-tokens.mjs`.
+
 ## 2. Proportion: 60 / 30 / 10
 
 - ~60% neutral background and surfaces
