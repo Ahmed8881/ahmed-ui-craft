@@ -177,9 +177,13 @@ context, and splitting them loses what Step 0 found. Use subagents at two points
 
 1. **Direction proposals (Step 2, open-ended briefs only).** If there is no brand,
    screenshot, or existing design system, launch 2-3 subagents in parallel. Give each
-   the Step 1 lines and assign each a *different* direction from the table. Each returns
-   only: direction, font pair, accent + neutral hue, differentiator, two signature moves.
-   Pick one (or show the user the options), then continue alone.
+   the Step 1 lines and assign each a *different* direction from the table. Tell each to
+   read its section of `references/directions.md` and `references/typography.md` first,
+   and give each the other agents' directions so they avoid them. Each returns only:
+   direction, font pair, accent + neutral hue, differentiator, two signature moves.
+   Reject a proposal that reuses another's font pair, accent hue, or differentiator, or
+   keeps the `tokens.css` starter values. Pick one (or show the user the options), then
+   continue alone.
    Why: one agent converges on the average; forced different starting points do not.
    Skip this when the brand already sets the direction.
 
@@ -187,8 +191,9 @@ context, and splitting them loses what Step 0 found. Use subagents at two points
    passes, launch one fresh subagent that did not write the code. Give it the changed
    files, the Step 1 lines, and the chosen direction, and ask it to: read
    `references/anti-patterns.md`, run `scripts/audit.sh`, and list every place the UI
-   looks generic, misses a state, or breaks the direction. It reports, it does not edit.
-   Fix what it finds.
+   looks generic, misses a state, or breaks the direction. It ranks each finding
+   blocker / major / minor and does not edit. Fix every blocker and major, re-run
+   `scripts/audit.sh`, and list unfixed minors in the reply. One review pass, no loop.
    Why: the builder judges the result by what it meant to make, not by what is on screen.
 
 No subagent tool: do both passes yourself, in order. For the review, re-read the files
