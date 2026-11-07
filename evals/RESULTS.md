@@ -81,3 +81,18 @@ See the section below, added after re-running the login prompt with the refined 
 
 **Still not covered by any run**: real browser rendering at 320-1440px, keyboard passes, and screen
 reader checks. The agents had no browser, so Part B was reviewed by reading the code only.
+
+## v1.1: rendered checks on the same outputs
+
+`scripts/browser-check.mjs` (Playwright + axe-core, 5 widths x 2 themes) on the eval pages:
+
+| Page | Result |
+|---|---|
+| baseline/login | FAIL: "Forgot password?" link is 19px tall (touch target) |
+| with-skill/pricing | all checks passed |
+| with-skill/dashboard | FAIL: axe `label-content-name-mismatch`. The three "Ack" buttons have an `aria-label` that does not contain their visible text, which breaks voice control ("click Ack") |
+| with-skill-v2/login | all checks passed |
+
+Neither failure is visible to grep. That is why the rendered check is now Part C of the audit.
+The run also found a bug in browser-check itself: it served only the page's folder, so
+`../tokens.css` 404'd on the preset preview. Fixed before release, and covered by CI.
