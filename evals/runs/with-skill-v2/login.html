@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sign in</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600&family=Schibsted+Grotesk:wght@700;800&family=Spline+Sans+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+/* ---------- tokens: Swiss minimal, cool slate neutrals, signal lime accent ---------- */
+:root {
+  --slate-50: oklch(98.5% 0.004 250);
+  --slate-100: oklch(96% 0.007 250);
+  --slate-300: oklch(86% 0.012 250);
+  --slate-500: oklch(56% 0.02 250);
+  --slate-600: oklch(46% 0.022 250);
+  --slate-700: oklch(37% 0.022 250);
+  --slate-800: oklch(28% 0.02 250);
+  --slate-900: oklch(21% 0.018 250);
+  --slate-950: oklch(15% 0.015 250);
+  --lime-300: oklch(90% 0.19 125);
+  --lime-400: oklch(86% 0.2 125);
+  --lime-700: oklch(42% 0.12 135);
+  --red-600: oklch(50% 0.2 27);
+  --red-400: oklch(72% 0.16 25);
+
+  --space-1: 0.25rem; --space-2: 0.5rem; --space-3: 0.75rem; --space-4: 1rem;
+  --space-5: 1.5rem; --space-6: 2rem; --space-7: 3rem; --space-8: 4rem;
+  --tap-min: 2.75rem;
+  --dur-instant: 80ms; --dur-fast: 150ms; --dur-base: 220ms;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --color-bg: var(--slate-100);
+  --color-surface: var(--slate-50);
+  --color-surface-raised: oklch(100% 0 0);
+  --color-text: var(--slate-900);
+  --color-text-muted: var(--slate-600);
+  --color-border: var(--slate-300);
+  --color-border-strong: var(--slate-500);
+  --color-panel: var(--slate-950);
+  --color-on-panel: var(--slate-50);
+  --color-on-panel-muted: var(--slate-300);
+  --color-accent: var(--lime-400);
+  --color-accent-hover: var(--lime-300);
+  --color-on-accent: var(--slate-950);
+  --color-accent-text: var(--lime-700);
+  --color-danger: var(--red-600);
+  --color-focus: var(--lime-700);
+  --ring: 0 0 0 3px oklch(42% 0.12 135 / 0.3);
+  --shadow-lg: 0 2px 4px oklch(20% 0.02 250 / 0.06), 0 12px 32px oklch(20% 0.02 250 / 0.12);
+
+  --font-display: "Schibsted Grotesk", "Segoe UI", sans-serif;
+  --font-body: "Hanken Grotesk", "Segoe UI", sans-serif;
+  --font-mono: "Spline Sans Mono", ui-monospace, "Cascadia Code", monospace;
+  --text-xs: 0.8125rem; --text-sm: 0.875rem; --text-base: 1rem;
+  --text-3xl: clamp(2rem, 1.5rem + 2vw, 3rem);
+  --text-4xl: clamp(2.5rem, 1.6rem + 3.4vw, 4.5rem);
+  --leading-tight: 1;
+  --leading-body: 1.6;
+  --tracking-tight: -0.035em;
+  --tracking-caps: 0.08em;
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --color-bg: var(--slate-950);
+    --color-surface: var(--slate-900);
+    --color-surface-raised: var(--slate-800);
+    --color-text: var(--slate-50);
+    --color-text-muted: var(--slate-300);
+    --color-border: var(--slate-700);
+    --color-panel: var(--slate-900);
+    --color-accent-text: var(--lime-400);
+    --color-danger: var(--red-400);
+    --color-focus: var(--lime-400);
+    --ring: 0 0 0 3px oklch(86% 0.2 125 / 0.35);
+    --shadow-lg: 0 12px 32px oklch(0% 0 0 / 0.5);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}
+
+/* ---------- base ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; min-height: 100svh; background: var(--color-bg); color: var(--color-text);
+  font-family: var(--font-body); font-size: var(--text-base); line-height: var(--leading-body); overflow-wrap: anywhere; }
+:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+svg { display: block; }
+
+/* ---------- layout: mobile stacked, desktop asymmetric split ---------- */
+.page { display: grid; min-height: 100svh; }
+.panel { background: var(--color-panel); color: var(--color-on-panel); padding: var(--space-6) var(--space-5);
+  display: flex; flex-direction: column; justify-content: space-between; gap: var(--space-6); }
+.brand { font: 500 var(--text-xs) / 1 var(--font-mono); text-transform: uppercase; letter-spacing: var(--tracking-caps);
+  display: flex; align-items: center; gap: var(--space-2); }
+.brand::before { content: ""; width: var(--space-3); height: var(--space-3); background: var(--color-accent); }
+.panel h1 { margin: 0; font: 800 var(--text-4xl) / var(--leading-tight) var(--font-display);
+  letter-spacing: var(--tracking-tight); text-wrap: balance; }
+.panel p { margin: 0; color: var(--color-on-panel-muted); max-width: 32ch; }
+.panel-copy { display: grid; gap: var(--space-4); }
+
+main { display: grid; align-items: center; padding: var(--space-6) var(--space-4); }
+.card { width: min(100%, 26rem); margin-inline: auto; display: grid; gap: var(--space-5); }
+.card h2 { margin: 0; font: 700 var(--text-3xl) / var(--leading-tight) var(--font-display); letter-spacing: var(--tracking-tight); }
+.lede { margin: 0; color: var(--color-text-muted); }
+form { display: grid; gap: var(--space-5); border-top: 4px solid var(--color-text); padding-top: var(--space-5); }
+
+@media (min-width: 48rem) {
+  .page { grid-template-columns: 5fr 4fr; }
+  .panel { padding: var(--space-7); }
+  main { padding: var(--space-7); background: var(--color-bg); }
+}
+
+/* ---------- fields ---------- */
+.field { display: grid; gap: var(--space-2); }
+.label-row { display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-3); }
+label { font-weight: 600; font-size: var(--text-sm); }
+label .idx { font: 500 var(--text-xs) / 1 var(--font-mono); color: var(--color-text-muted); margin-inline-end: var(--space-2); }
+.input { width: 100%; min-height: var(--tap-min); padding-inline: var(--space-3);
+  font: inherit; font-size: max(16px, var(--text-base)); color: var(--color-text);
+  background: var(--color-surface-raised); border: 1px solid var(--color-border-strong); border-radius: var(--radius-sm);
+  transition: border-color var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out); }
+@media (hover: hover) { .input:hover:not(:disabled) { border-color: var(--color-text); } }
+.input:focus-visible { outline: none; border-color: var(--color-focus); box-shadow: var(--ring); }
+@media (forced-colors: active) { .input:focus-visible { outline: 2px solid CanvasText; } }
+.input[aria-invalid="true"] { border-color: var(--color-danger); }
+.input:disabled { background: var(--color-surface); color: var(--color-text-muted); cursor: not-allowed; }
+.error { margin: 0; display: flex; align-items: center; gap: var(--space-2); font-size: var(--text-sm); color: var(--color-danger); font-weight: 600; }
+.error[hidden] { display: none; }
+.error svg { flex: none; }
+
+.link { color: var(--color-accent-text); font-size: var(--text-sm); font-weight: 600; text-underline-offset: 0.2em;
+  display: inline-flex; align-items: center; min-height: var(--tap-min); }
+@media (hover: hover) { .link:hover { text-decoration-thickness: 2px; } }
+
+/* ---------- button ---------- */
+.btn { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 100%;
+  min-height: var(--tap-min); padding-inline: var(--space-5);
+  font: 700 var(--text-base) / 1 var(--font-body); color: var(--color-on-accent);
+  background: var(--color-accent); border: 1px solid var(--color-on-accent); border-radius: var(--radius-sm); cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease-out), transform var(--dur-instant) var(--ease-out); }
+@media (hover: hover) { .btn:hover:not(:disabled) { background: var(--color-accent-hover); } }
+.btn:active:not(:disabled) { transform: translateY(1px); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn[aria-busy="true"] { cursor: progress; }
+.btn[aria-busy="true"] .label { visibility: hidden; }
+.btn[aria-busy="true"]::after { content: ""; position: absolute; width: 1.1em; height: 1.1em; border: 2px solid currentColor;
+  border-right-color: transparent; border-radius: 50%; animation: spin 0.7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.foot { margin: 0; font-size: var(--text-sm); color: var(--color-text-muted); }
+</style>
+</head>
+<body>
+<div class="page">
+  <aside class="panel">
+    <div class="brand">Ledgerline / Console</div>
+    <div class="panel-copy">
+      <h1>Close the books in two days.</h1>
+      <p>Sign in to reconcile accounts, review approvals and ship the month-end report.</p>
+    </div>
+  </aside>
+
+  <main>
+    <div class="card">
+      <div>
+        <h2>Sign in</h2>
+        <p class="lede">Use the work email on your Ledgerline account.</p>
+      </div>
+
+      <form id="login-form" novalidate>
+        <div class="field">
+          <label for="email"><span class="idx" aria-hidden="true">01</span>Email</label>
+          <input class="input" id="email" name="email" type="email" autocomplete="username" inputmode="email" required aria-describedby="email-error">
+          <p class="error" id="email-error" hidden>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="8" cy="8" r="6.5"/><path d="M8 4.5v4M8 11v.5"/></svg>
+            <span></span>
+          </p>
+        </div>
+
+        <div class="field">
+          <div class="label-row">
+            <label for="password"><span class="idx" aria-hidden="true">02</span>Password</label>
+            <a class="link" href="/forgot">Forgot password?</a>
+          </div>
+          <input class="input" id="password" name="password" type="password" autocomplete="current-password" required aria-describedby="password-error">
+          <p class="error" id="password-error" hidden>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="8" cy="8" r="6.5"/><path d="M8 4.5v4M8 11v.5"/></svg>
+            <span></span>
+          </p>
+        </div>
+
+        <button class="btn" type="submit"><span class="label">Sign in</span></button>
+      </form>
+      <p class="foot">Protected by single sign-on. Your session ends after 12 hours.</p>
+    </div>
+  </main>
+</div>
+
+<script>
+const form = document.getElementById("login-form");
+const btn = form.querySelector(".btn");
+
+function setError(input, message) {
+  const box = document.getElementById(input.id + "-error");
+  box.querySelector("span").textContent = message;
+  box.hidden = !message;
+  if (message) input.setAttribute("aria-invalid", "true"); else input.removeAttribute("aria-invalid");
+}
+
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const email = form.email, password = form.password;
+  setError(email, !email.value.trim() ? "Enter your work email." : email.validity.typeMismatch ? "Enter an email like name@company.com." : "");
+  setError(password, password.value ? "" : "Enter your password.");
+  const firstBad = form.querySelector('[aria-invalid="true"]');
+  if (firstBad) return firstBad.focus();
+  btn.setAttribute("aria-busy", "true");
+  btn.disabled = true;
+  if (typeof login === "function") login(); // hook for the original handler
+});
+</script>
+</body>
+</html>

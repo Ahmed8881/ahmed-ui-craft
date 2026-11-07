@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ledgerly Pricing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#faf8f4;--ink:#1c2420;--mute:#5d6862;--line:#e3ded3;--card:#fff;--accent:#1f6b4f;--accent-ink:#fff;--soft:#e6f0ea}
+@media(prefers-color-scheme:dark){:root{--bg:#121714;--ink:#eef1ee;--mute:#9aa8a0;--line:#2a332e;--card:#1a211d;--accent:#4cb98c;--accent-ink:#0c1410;--soft:#1f2e26}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Inter,system-ui,sans-serif}
+main{max-width:1040px;margin:0 auto;padding:64px 20px 80px}
+h1,h2{font-family:Fraunces,Georgia,serif;font-weight:600;letter-spacing:-.02em;margin:0}
+h1{font-size:clamp(2.2rem,5vw,3.4rem);line-height:1.1;max-width:14ch}
+.lead{color:var(--mute);max-width:46ch;margin:16px 0 32px}
+.brand{font-family:Fraunces,serif;font-weight:600;font-size:1.2rem;margin-bottom:48px;display:block}
+.toggle{display:inline-flex;background:var(--soft);border-radius:999px;padding:4px;gap:2px}
+.toggle button{border:0;background:none;color:var(--ink);font:inherit;font-weight:500;padding:8px 18px;border-radius:999px;cursor:pointer}
+.toggle button[aria-pressed=true]{background:var(--accent);color:var(--accent-ink)}
+.toggle small{font-size:.75rem;opacity:.85;margin-left:4px}
+button:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;margin-top:36px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:28px;display:flex;flex-direction:column}
+.card.pop{border:2px solid var(--accent);position:relative}
+.tag{position:absolute;top:-12px;left:24px;background:var(--accent);color:var(--accent-ink);font-size:.75rem;font-weight:600;padding:2px 12px;border-radius:999px}
+.card h2{font-size:1.4rem}
+.for{color:var(--mute);font-size:.9rem;margin:4px 0 20px;min-height:2.8em}
+.price{font-family:Fraunces,serif;font-size:2.8rem;font-weight:600;line-height:1}
+.price span{font:400 .9rem Inter,sans-serif;color:var(--mute)}
+.bill{color:var(--mute);font-size:.82rem;margin:6px 0 20px;min-height:1.3em}
+.cta{display:block;text-align:center;text-decoration:none;padding:11px;border-radius:10px;border:1px solid var(--line);color:var(--ink);font-weight:600}
+.pop .cta{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.cta:hover{filter:brightness(.95)}
+ul{list-style:none;padding:0;margin:24px 0 0;display:grid;gap:10px;font-size:.95rem}
+li::before{content:"✓";color:var(--accent);font-weight:700;margin-right:10px}
+.faq{margin-top:88px;max-width:720px}
+.faq h2{font-size:2rem;margin-bottom:20px}
+details{border-top:1px solid var(--line);padding:16px 0}
+details:last-child{border-bottom:1px solid var(--line)}
+summary{cursor:pointer;font-weight:500;list-style:none;display:flex;justify-content:space-between;gap:16px}
+summary::after{content:"+";color:var(--accent);font-size:1.3rem;line-height:1}
+details[open] summary::after{content:"−"}
+details p{color:var(--mute);margin:10px 0 0}
+</style>
+</head>
+<body>
+<main>
+<span class="brand">Ledgerly</span>
+<h1>Books that keep up with your agency</h1>
+<p class="lead">Invoicing, expenses and project profitability for small agencies. Pick a plan, change it whenever.</p>
+
+<div class="toggle" role="group" aria-label="Billing period">
+  <button id="m" aria-pressed="true">Monthly</button>
+  <button id="a" aria-pressed="false">Annual <small>save 20%</small></button>
+</div>
+
+<div class="grid">
+  <section class="card">
+    <h2>Solo</h2><p class="for">For freelancers and one-person studios.</p>
+    <div class="price">$<b data-p="19">19</b><span> /month</span></div><div class="bill"></div>
+    <a class="cta" href="#">Start free trial</a>
+    <ul><li>Unlimited invoices</li><li>Expense tracking</li><li>Bank sync, 1 account</li><li>Basic reports</li></ul>
+  </section>
+  <section class="card pop">
+    <span class="tag">Most popular</span>
+    <h2>Studio</h2><p class="for">For teams of 2 to 10 billing by project.</p>
+    <div class="price">$<b data-p="49">49</b><span> /month</span></div><div class="bill"></div>
+    <a class="cta" href="#">Start free trial</a>
+    <ul><li>Everything in Solo</li><li>Up to 10 users</li><li>Project profitability</li><li>Recurring retainers</li><li>Multi-currency</li></ul>
+  </section>
+  <section class="card">
+    <h2>Agency</h2><p class="for">For 10+ people with several clients and entities.</p>
+    <div class="price">$<b data-p="109">109</b><span> /month</span></div><div class="bill"></div>
+    <a class="cta" href="#">Talk to us</a>
+    <ul><li>Everything in Studio</li><li>Unlimited users</li><li>Multiple entities</li><li>Approval workflows</li><li>Priority support</li></ul>
+  </section>
+</div>
+
+<section class="faq">
+  <h2>Questions</h2>
+  <details><summary>Can I switch plans later?</summary><p>Yes. Upgrades apply immediately and downgrades take effect at the next billing date.</p></details>
+  <details><summary>How does annual billing work?</summary><p>You pay once a year at a 20% discount. Cancel any time and keep access until the period ends.</p></details>
+  <details><summary>Is there a free trial?</summary><p>Every plan has a 14-day trial. No card required.</p></details>
+  <details><summary>Can my accountant get access?</summary><p>Accountants and bookkeepers can join any plan for free, with read and export access.</p></details>
+  <details><summary>Can I import data from another tool?</summary><p>We import from QuickBooks, Xero and CSV files, and our team will help with the first migration.</p></details>
+</section>
+</main>
+<script>
+const m=document.getElementById('m'),a=document.getElementById('a');
+function set(annual){
+  m.setAttribute('aria-pressed',!annual);a.setAttribute('aria-pressed',annual);
+  document.querySelectorAll('[data-p]').forEach(b=>{
+    const p=+b.dataset.p,v=annual?Math.round(p*.8):p;
+    b.textContent=v;
+    b.parentNode.nextElementSibling.textContent=annual?`Billed $${v*12} yearly`:'Billed monthly';
+  });
+}
+m.onclick=()=>set(false);a.onclick=()=>set(true);set(false);
+</script>
+</body>
+</html>

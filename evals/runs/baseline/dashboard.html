@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Infra Monitor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0b0f17;--card:#131a26;--line:#1f2a3b;--tx:#e6ebf3;--mute:#8a97ab;--ok:#34d399;--warn:#fbbf24;--bad:#f87171;--acc:#60a5fa}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.4 Inter,system-ui,sans-serif;padding:24px}
+header{display:flex;justify-content:space-between;align-items:center;max-width:1200px;margin:0 auto 20px}
+h1{font-size:18px;margin:0;font-weight:600}
+.live{color:var(--mute);font-size:12px;display:flex;align-items:center;gap:6px}
+.live i{width:8px;height:8px;border-radius:50%;background:var(--ok);animation:p 2s infinite}
+@keyframes p{50%{opacity:.3}}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;max-width:1200px;margin:0 auto}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px}
+.card h2{margin:0;font-size:12px;font-weight:500;color:var(--mute);text-transform:uppercase;letter-spacing:.06em;display:flex;justify-content:space-between}
+.badge{font-size:11px;text-transform:none;letter-spacing:0;padding:2px 8px;border-radius:99px;border:1px solid currentColor}
+.ok{color:var(--ok)}.warn{color:var(--warn)}.bad{color:var(--bad)}
+.val{font:500 34px 'JetBrains Mono',monospace;margin:10px 0 2px}
+.val small{font-size:16px;color:var(--mute)}
+.sub{color:var(--mute);font-size:12px}
+svg{width:100%;height:48px;margin-top:12px;display:block}
+.bar{height:6px;background:var(--line);border-radius:3px;margin-top:14px;overflow:hidden}
+.bar b{display:block;height:100%;background:var(--acc);border-radius:3px}
+@media(prefers-reduced-motion:reduce){.live i{animation:none}}
+</style>
+</head>
+<body>
+<header><h1>Production cluster</h1><span class="live"><i></i>Live · updated <span id="t">just now</span></span></header>
+<main class="grid" id="g"></main>
+<script>
+const rnd=(n,a,b)=>Array.from({length:n},()=>a+Math.random()*(b-a));
+const cards=[
+ {t:'CPU',v:'62',u:'%',s:'8 nodes avg · peak 81%',st:['ok','Healthy'],bar:62,spark:rnd(24,45,75),c:'--acc'},
+ {t:'Memory',v:'78',u:'%',s:'25.0 / 32 GB used',st:['warn','High'],bar:78,spark:rnd(24,65,80),c:'--warn'},
+ {t:'Request rate',v:'12.4k',u:' req/s',s:'+4.2% vs last hour',st:['ok','Normal'],spark:rnd(24,9,14),c:'--acc'},
+ {t:'Error rate',v:'1.8',u:'%',s:'p99 latency 420 ms',st:['bad','Elevated'],spark:rnd(24,0.3,2),c:'--bad'},
+ {t:'Active alerts',v:'5',u:'',s:'2 critical · 3 warning',st:['bad','2 critical']},
+ {t:'Deploys today',v:'14',u:'',s:'13 succeeded · 1 rolled back',st:['ok','Last 12m ago']}
+];
+const line=d=>{const mx=Math.max(...d),mn=Math.min(...d);return d.map((y,i)=>`${i?'L':'M'}${i*(200/(d.length-1))},${44-(y-mn)/(mx-mn||1)*40}`).join('')};
+g.innerHTML=cards.map(c=>`<section class="card" aria-label="${c.t}"><h2>${c.t}<span class="badge ${c.st[0]}">${c.st[1]}</span></h2>
+<div class="val">${c.v}<small>${c.u}</small></div><div class="sub">${c.s}</div>
+${c.bar?`<div class="bar" role="progressbar" aria-valuenow="${c.bar}" aria-valuemin="0" aria-valuemax="100"><b style="width:${c.bar}%;background:var(${c.c})"></b></div>`:''}
+${c.spark?`<svg viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true"><path d="${line(c.spark)}" fill="none" stroke="var(${c.c})" stroke-width="2" vector-effect="non-scaling-stroke"/></svg>`:''}</section>`).join('');
+</script>
+</body>
+</html>
