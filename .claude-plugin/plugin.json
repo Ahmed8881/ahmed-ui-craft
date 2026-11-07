@@ -1,6 +1,6 @@
 {
   "name": "ahmed-ui-craft",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Makes Claude build distinctive, production-grade, accessible frontend UI instead of generic AI-looking output: design direction, tokens first, every component state, WCAG 2.2 AA, and a pre-delivery audit.",
   "author": { "name": "Ahmed Butt", "url": "https://github.com/Ahmed8881" },
   "homepage": "https://github.com/Ahmed8881/ahmed-ui-craft",

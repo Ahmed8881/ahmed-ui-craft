@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.2.0 - 2026-11-07
+
+### Added
+- Multi-agent mode in `SKILL.md`: 2-3 parallel subagents propose distinct directions for
+  open-ended briefs, and a fresh subagent reviews every new page and ranks findings
+  blocker / major / minor before delivery. Falls back to doing both passes alone.
+
 ## 1.1.0 - 2026-11-07
 
 ### Added
