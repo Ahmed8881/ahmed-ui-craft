@@ -42,6 +42,23 @@ node scripts/palette.mjs --hue 60 --accent 30     # failing palette? regenerate 
 Part A cannot see the rendered page. If a browser is available, also run `scripts/browser-check.mjs`
 (see Part C).
 
+## Part C - rendered checks (when a browser is available)
+
+```bash
+npm i -D playwright @axe-core/playwright && npx playwright install chromium   # once per project
+node scripts/browser-check.mjs http://localhost:3000/pricing     # running dev server
+node scripts/browser-check.mjs dist/index.html                   # or a built/static file
+```
+
+It loads the page at 320, 375, 768, 1024, and 1440px in light and dark and saves full-page
+screenshots to `ui-check/`. It then checks horizontal overflow (naming the element that
+causes it), touch targets under 44px, keyboard focus without a visible ring, layout shift
+(CLS > 0.1), animations still running under reduced motion, and axe-core WCAG 2.2 A/AA rules.
+Exits 1 on any failure.
+
+**Look at the screenshots.** Read at least the 375px and 1440px images and check them against the
+direction and differentiator from Step 1. Automated checks prove the page is usable, not that it is good.
+
 ## Part B - review checklist
 
 **Direction and distinctiveness**

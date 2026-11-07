@@ -164,8 +164,9 @@ plausible content that fits the purpose from Step 1.
 
 ## Step 5 - Audit before delivering
 
-Run every item in `scripts/audit.md`, including its grep commands and the
-contrast measurement (`scripts/check-tokens.mjs`), and fix what fails. Ratios written
+Run `scripts/audit.md`: `bash scripts/audit.sh <changed files>` (pattern checks plus
+token contrast), then, if Playwright is available or the user agrees to install it,
+`node scripts/browser-check.mjs <page>` and look at the screenshots it saves. Fix what fails. Ratios written
 in comments are claims, not measurements; compute them. Do not report the work as done with known failures; if something cannot
 be fixed (for example, a brand color that fails contrast), say so explicitly.
 
@@ -244,6 +245,8 @@ Read only the files the task needs. Each is short and code-first.
 - `assets/tokens.css` - starter tokens with light and dark themes. Copy, then change values to match the direction.
 - `assets/directions/*.css` - one preset per direction, loaded after `tokens.css`. `preview.html` shows them side by side.
 - `scripts/audit.md` - the pre-delivery checklist. Always run it.
+- `scripts/audit.sh` - `bash scripts/audit.sh <folder-or-file>` runs the automated audit checks; exits 1 on findings.
+- `scripts/browser-check.mjs` - `node scripts/browser-check.mjs <url-or-file>` renders the page (Playwright) at 5 widths x 2 themes: screenshots, overflow, touch targets, focus, CLS, reduced motion, axe-core.
 - `scripts/check-tokens.mjs` - `node scripts/check-tokens.mjs <tokens.css>` measures every semantic text/background pair in light and dark. Run it whenever you change color tokens.
 - `scripts/contrast.mjs` - `node scripts/contrast.mjs "<fg>" "<bg>"` prints the WCAG ratio for one `#hex` or `oklch()` pair.
 
