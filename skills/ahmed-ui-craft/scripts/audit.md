@@ -3,68 +3,44 @@
 Run this before you tell the user the UI is done. Fix every failure, or list it
 explicitly in your reply with the reason. Part A is automatic; Part B needs judgment.
 
-## Part A - grep checks
+## Part A - automated checks
 
-Set `T` to what you changed: a folder (`src`, `app`, `components`) or a single file.
-Each command should print nothing; any output is a finding to fix or justify.
-Works in bash, zsh, and Git Bash on Windows.
+Run from the skill folder (or give the full path to the script), pointing at what you changed:
 
 ```bash
-export LC_ALL=C.UTF-8   # grep -P needs a UTF-8 locale (Git Bash fails without it)
-T=src                   # or T=index.html
-G="grep -rnP --exclude-dir=node_modules --exclude-dir=.next --exclude-dir=dist"
-
-# 1. Hard-coded colors outside token declarations (lines declaring --custom-props are allowed)
-$G "#[0-9a-fA-F]{3,8}\b|rgba?\(|hsla?\(|oklch\(" $T | grep -vP -- "--[\w-]+\s*:[^;{}]*(#[0-9a-fA-F]{3,8}|rgba?\(|hsla?\(|oklch\()"
-
-# 2. Default Tailwind palette and arbitrary px values (Tailwind projects)
-$G "\b(bg|text|border|from|to|via|ring)-(slate|gray|zinc|neutral|indigo|violet|purple|blue)-\d{2,3}\b|\[\d+px\]" $T
-
-# 3. Generic fonts as the primary face
-$G "font-family:\s*['\"]?(Inter|Roboto|Arial|Helvetica|Poppins|Montserrat|Space Grotesk|DM Sans)\b|family=(Inter|Roboto|Poppins|Montserrat|Space\+Grotesk|DM\+Sans)\b|next/font/google.*\b(Inter|Roboto|Poppins)\b" $T
-
-# 4. Focus removed -> each hit needs a visible replacement on the same element
-#    (expected hit: the input pattern in components.md swaps outline for border + ring)
-$G "outline:\s*(none|0)\b|\boutline-none\b" $T
-
-# 5. transition: all
-$G "transition:\s*all\b|\btransition-all\b" $T
-
-# 6. Unsafe HTML sinks -> each hit: is the input trusted, or sanitized with DOMPurify?
-$G "dangerouslySetInnerHTML|\.innerHTML\s*=|\.outerHTML\s*=|insertAdjacentHTML|v-html|\{@html" $T
-
-# 7. Secrets in client code
-$G "(NEXT_PUBLIC|VITE|PUBLIC)_\w*(SECRET|PRIVATE|PASSWORD)|sk_live_|sk_test_" $T
-
-# 8. Images missing alt, or missing width/height
-$G "<img(?![^>]*\balt=)" $T
-$G "<img(?![^>]*\b(width|height|fill)\b)" $T
-
-# 9. Emoji and dingbats used as icons (also catches content: "✓" in CSS)
-$G "[\x{1F300}-\x{1FAFF}\x{2600}-\x{27BF}]" $T
-
-# 10. Clickable non-buttons
-$G "<(div|span|li)[^>]*\bon[cC]lick" $T
-
-# 11. Something animates but nothing handles reduced motion (prints a warning if so)
-$G -l "animation|transition|framer-motion|gsap" $T >/dev/null && ! $G -q "prefers-reduced-motion|useReducedMotion" $T && echo "MISSING prefers-reduced-motion"
-
-# 12. target=_blank without rel
-$G "target=[\"']_blank[\"'](?![^>]*\brel=)" $T
+bash scripts/audit.sh src                 # folder: html, css, js/ts, jsx/tsx, vue, svelte, astro, mdx
+bash scripts/audit.sh dist/index.html     # or a single file
 ```
 
-Then measure contrast in every theme. Do not copy ratios from comments; compute them.
-`check-tokens.mjs` reads your tokens file (or the page with inline tokens), resolves
-`var()` and `light-dark()`, and checks 15 semantic pairs per theme. It exits 1 on any failure:
+It prints each finding with file and line, and exits 1 if anything is found. Works in bash,
+zsh, and Git Bash on Windows. Fix every finding, or justify it in your reply. After reviewing an
+expected hit, skip that check with `AUDIT_ALLOW=focus-removed,html-sink bash scripts/audit.sh src`.
+
+| ID | Flags |
+|---|---|
+| `hardcoded-color` | hex/rgb/hsl/oklch outside a `--custom-property` declaration |
+| `tailwind-default` | `bg-indigo-500`-style default palette classes, `[13px]` arbitrary values |
+| `generic-font` | Inter, Roboto, Arial, Helvetica, Poppins, Montserrat, Space Grotesk, DM Sans as a face |
+| `focus-removed` | `outline: none` / `outline-none`. Expected for the input pattern in `components.md`, which swaps it for border + ring |
+| `transition-all` | `transition: all`, `transition-all` |
+| `html-sink` | `dangerouslySetInnerHTML`, `.innerHTML =`, `insertAdjacentHTML`, `v-html`, `{@html}` |
+| `client-secret` | secret-looking public env vars, `sk_live_` / `sk_test_` keys |
+| `img-alt`, `img-size` | `<img>` without `alt`, or without `width`/`height` |
+| `emoji-icon` | emoji and dingbats (including `content: "✓"`) |
+| `div-click` | `onClick` on `div`/`span`/`li` |
+| `blank-rel` | `target="_blank"` without `rel` |
+| `reduced-motion` | animation present but no `prefers-reduced-motion` / `useReducedMotion` |
+| `contrast` | any file defining `--color-text` is measured with `check-tokens.mjs` (needs node) |
+
+For colors not covered by tokens (chart series, illustrations), measure one-off pairs:
 
 ```bash
-node scripts/check-tokens.mjs styles/tokens.css        # or the .html file with inline tokens
-node scripts/contrast.mjs "oklch(46% 0.016 60)" "#fbf8f3"   # one-off pair, e.g. a chart color
-node scripts/palette.mjs --hue 60 --accent 30                # failing palette? regenerate one that passes
+node scripts/contrast.mjs "oklch(46% 0.016 60)" "#fbf8f3"
+node scripts/palette.mjs --hue 60 --accent 30     # failing palette? regenerate one that passes
 ```
 
-(Path is relative to this skill's folder. Accepts `#hex` and `oklch()`. Alpha is ignored:
-for translucent colors, measure the solid color they blend to on their background.)
+Part A cannot see the rendered page. If a browser is available, also run `scripts/browser-check.mjs`
+(see Part C).
 
 ## Part B - review checklist
 

@@ -27,6 +27,8 @@ const PAIRS = [
 ];
 
 export function parseTokens(css) {
+  // HTML input: only <style> contents count (scripts contain braces that would confuse the block parser)
+  if (/<style[\s>]/i.test(css)) css = [...css.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/gi)].map((m) => m[1]).join("\n");
   const noComments = css.replace(/\/\*[\s\S]*?\*\//g, "");
   const decls = (body) => [...body.matchAll(/(--[\w-]+)\s*:\s*([^;{}]+)(?=[;}])/g)];
   // Base theme = declarations in plain :root / html / @theme blocks; later ones win, like the cascade.
@@ -75,9 +77,12 @@ export function check(css) {
   for (const theme of ["light", "dark"]) {
     for (const [fg, bg, min, why] of PAIRS) {
       if (!(fg in tokens) || !(bg in tokens)) continue;
-      const a = resolve(tokens, tokens[fg], theme), b = resolve(tokens, tokens[bg], theme);
-      const ratio = contrast(a, b);
-      rows.push({ theme, fg, bg, ratio, min, why, ok: ratio >= min });
+      try {
+        const ratio = contrast(resolve(tokens, tokens[fg], theme), resolve(tokens, tokens[bg], theme));
+        rows.push({ theme, fg, bg, ratio, min, why, ok: ratio >= min });
+      } catch (e) {
+        rows.push({ theme, fg, bg, ratio: NaN, min, why: `not measurable: ${e.message}`, ok: false });
+      }
     }
   }
   return rows;
@@ -92,6 +97,8 @@ if (!isMain) {
   const r = check(css);
   console.assert(r.length === 2 && r.every((x) => Math.abs(x.ratio - 21) < 0.01), "light-dark resolves per theme");
   console.assert(check(`:root{--color-text:#777;--color-bg:#fff}`)[0].ok === false, "#777 on white fails 4.5");
+  console.assert(check(`<script>if(a){}</script><style>:root{--color-text:#000;--color-bg:#fff}</style>`)[0].ok, "html: script braces ignored");
+  console.assert(check(`:root{--color-text:var(--nope);--color-bg:#fff}`)[0].ok === false, "unresolvable token reported, not thrown");
   const over = `:root{--color-text:#777;--color-bg:#fff} :root[data-theme="dark"]{--color-text:#fff} :root{--color-text:#000}`;
   console.assert(check(over).every((x) => Math.abs(x.ratio - 21) < 0.01), "later :root wins, dark override block ignored");
   console.log("ok");
