@@ -235,6 +235,7 @@ be fixed (for example, a brand color that fails contrast), say so explicitly.
 Read only the files the task needs. Each is short and code-first.
 
 - `references/directions.md` - the seven presets: when to use each, signature moves with CSS, what to avoid. Read after choosing a direction.
+- `references/frameworks.md` - wiring tokens, fonts, dark mode, and motion into Next.js + Tailwind v4, shadcn/ui, MUI, Nuxt, SvelteKit, Astro. Read after Step 0.
 - `references/typography.md` - picking fonts, building the type scale, fluid sizes, font loading without layout shift.
 - `references/color-and-theming.md` - building a palette in OKLCH, semantic tokens, dark mode, checking contrast.
 - `references/layout-and-spacing.md` - spacing scale, grids that are not identical cards, breakpoints, containers, overflow fixes.
