@@ -1,0 +1,35 @@
+/* Direction preset: Swiss minimal. See references/directions.md for its signature moves.
+ * Load after assets/tokens.css; it overrides colors, fonts, radius, shadow, and motion.
+ * Fonts: <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;800&family=Spline+Sans+Mono:wght@400&display=swap">
+ * Colors: node scripts/palette.mjs --hue 250 --accent 27 --tint 0.004 --accent-chroma 0.21
+ * Starting point, not a finished brand: shift the hues to fit the product. Re-check with check-tokens.mjs.
+ */
+:root {
+  --color-bg: light-dark(oklch(98.5% 0.002 250), oklch(15.0% 0.004 250));
+  --color-surface: light-dark(oklch(96.0% 0.003 250), oklch(20.0% 0.004 250));
+  --color-surface-raised: light-dark(oklch(100.0% 0.000 0), oklch(26.0% 0.004 250));
+  --color-text: light-dark(oklch(20.0% 0.004 250), oklch(95.0% 0.002 250));
+  --color-text-muted: light-dark(oklch(53.3% 0.006 250), oklch(64.0% 0.006 250));
+  --color-border: light-dark(oklch(86.0% 0.004 250), oklch(33.0% 0.004 250));
+  --color-border-strong: light-dark(oklch(64.8% 0.006 250), oklch(54.5% 0.006 250));
+  --color-inverse-surface: light-dark(oklch(20.0% 0.004 250), oklch(95.0% 0.002 250));
+  --color-on-inverse: light-dark(oklch(96.0% 0.003 250), oklch(20.0% 0.004 250));
+  --color-accent: light-dark(oklch(58.8% 0.210 27), oklch(63.0% 0.210 27));
+  --color-accent-hover: light-dark(oklch(52.8% 0.210 27), oklch(60.7% 0.210 27));
+  --color-on-accent: light-dark(oklch(100.0% 0.000 0), oklch(15.0% 0.004 250));
+  --color-accent-text: light-dark(oklch(55.0% 0.210 27), oklch(60.7% 0.210 27));
+  --color-success: light-dark(oklch(53.5% 0.140 150), oklch(65.0% 0.140 150));
+  --color-warning: light-dark(oklch(55.0% 0.118 70), oklch(65.0% 0.140 70));
+  --color-danger: light-dark(oklch(55.0% 0.190 27), oklch(65.0% 0.190 27));
+  --color-focus: light-dark(oklch(58.8% 0.210 27), oklch(63.0% 0.210 27));
+}
+
+:root {
+  --font-display: "Hanken Grotesk", Helvetica, sans-serif;
+  --font-body: "Hanken Grotesk", Helvetica, sans-serif;
+  --font-mono: "Spline Sans Mono", ui-monospace, monospace;
+  --radius-sm: 0; --radius-md: 0; --radius-lg: 0;
+  --shadow-sm: none; --shadow-md: none; --shadow-lg: none;
+  --border-width: 1px; --leading-tight: 0.98; --tracking-tight: -0.035em;
+  --ease-out: cubic-bezier(0.4, 0, 0.2, 1); --dur-base: 180ms; --dur-slow: 280ms;
+}

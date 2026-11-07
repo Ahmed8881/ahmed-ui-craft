@@ -69,6 +69,11 @@ motion, imagery, and copy rhythm. Mixed directions read as indecision.
 | Luxury | High-contrast serif, wide tracking caps | Near-black, cream, metallic or deep jewel accent | Generous whitespace, thin borders | Slow, long eases |
 | Playful | Chunky display, friendly sans | Two saturated colors that clash on purpose | Sticker shapes, offset shadows | Bouncy overshoot |
 
+Each row has a ready preset in `assets/directions/` (fonts, contrast-checked light and dark
+palette, radius, shadow, motion) and a list of signature moves in `references/directions.md`.
+Load the preset after `tokens.css`, use at least two of its signature moves, and shift its
+hues toward the brand. Swiss minimal is the seventh preset.
+
 Rules for the choice:
 - Derive it from Step 1, not from habit. A dashboard for SREs is not "luxury".
 - Name it in your reply ("Direction: industrial / technical") so the user can redirect early.
@@ -228,6 +233,7 @@ be fixed (for example, a brand color that fails contrast), say so explicitly.
 
 Read only the files the task needs. Each is short and code-first.
 
+- `references/directions.md` - the seven presets: when to use each, signature moves with CSS, what to avoid. Read after choosing a direction.
 - `references/typography.md` - picking fonts, building the type scale, fluid sizes, font loading without layout shift.
 - `references/color-and-theming.md` - building a palette in OKLCH, semantic tokens, dark mode, checking contrast.
 - `references/layout-and-spacing.md` - spacing scale, grids that are not identical cards, breakpoints, containers, overflow fixes.
@@ -236,6 +242,7 @@ Read only the files the task needs. Each is short and code-first.
 - `references/components.md` - buttons, inputs, cards, modals, tables with every state written out.
 - `references/anti-patterns.md` - the generic-AI look itemized, with the fix for each. Read before you start and again before you finish.
 - `assets/tokens.css` - starter tokens with light and dark themes. Copy, then change values to match the direction.
+- `assets/directions/*.css` - one preset per direction, loaded after `tokens.css`. `preview.html` shows them side by side.
 - `scripts/audit.md` - the pre-delivery checklist. Always run it.
 - `scripts/check-tokens.mjs` - `node scripts/check-tokens.mjs <tokens.css>` measures every semantic text/background pair in light and dark. Run it whenever you change color tokens.
 - `scripts/contrast.mjs` - `node scripts/contrast.mjs "<fg>" "<bg>"` prints the WCAG ratio for one `#hex` or `oklch()` pair.

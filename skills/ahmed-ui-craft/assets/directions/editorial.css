@@ -1,0 +1,35 @@
+/* Direction preset: Editorial. See references/directions.md for its signature moves.
+ * Load after assets/tokens.css; it overrides colors, fonts, radius, shadow, and motion.
+ * Fonts: <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@400&display=swap">
+ * Colors: node scripts/palette.mjs --hue 85 --accent 255 --tint 0.014 --accent-chroma 0.16
+ * Starting point, not a finished brand: shift the hues to fit the product. Re-check with check-tokens.mjs.
+ */
+:root {
+  --color-bg: light-dark(oklch(98.5% 0.007 85), oklch(15.0% 0.014 85));
+  --color-surface: light-dark(oklch(96.0% 0.011 85), oklch(20.0% 0.014 85));
+  --color-surface-raised: light-dark(oklch(100.0% 0.000 0), oklch(26.0% 0.014 85));
+  --color-text: light-dark(oklch(20.0% 0.014 85), oklch(95.0% 0.008 85));
+  --color-text-muted: light-dark(oklch(53.5% 0.020 85), oklch(64.0% 0.020 85));
+  --color-border: light-dark(oklch(86.0% 0.014 85), oklch(33.0% 0.014 85));
+  --color-border-strong: light-dark(oklch(64.8% 0.020 85), oklch(54.5% 0.020 85));
+  --color-inverse-surface: light-dark(oklch(20.0% 0.014 85), oklch(95.0% 0.008 85));
+  --color-on-inverse: light-dark(oklch(96.0% 0.011 85), oklch(20.0% 0.014 85));
+  --color-accent: light-dark(oklch(56.5% 0.160 255), oklch(62.0% 0.160 255));
+  --color-accent-hover: light-dark(oklch(50.5% 0.160 255), oklch(58.5% 0.160 255));
+  --color-on-accent: light-dark(oklch(100.0% 0.000 0), oklch(15.0% 0.014 85));
+  --color-accent-text: light-dark(oklch(55.0% 0.160 255), oklch(60.0% 0.160 255));
+  --color-success: light-dark(oklch(53.5% 0.140 150), oklch(65.0% 0.140 150));
+  --color-warning: light-dark(oklch(55.0% 0.118 70), oklch(65.0% 0.140 70));
+  --color-danger: light-dark(oklch(55.0% 0.190 27), oklch(65.0% 0.190 27));
+  --color-focus: light-dark(oklch(56.5% 0.160 255), oklch(62.0% 0.160 255));
+}
+
+:root {
+  --font-display: "Newsreader", Georgia, serif;
+  --font-body: "Source Sans 3", "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --radius-sm: 0; --radius-md: 2px; --radius-lg: 4px;
+  --shadow-sm: none; --shadow-md: none; --shadow-lg: 0 1px 0 var(--color-border);
+  --border-width: 1px; --leading-tight: 1.02; --tracking-tight: -0.025em;
+  --ease-out: cubic-bezier(0.25, 1, 0.5, 1); --dur-base: 260ms; --dur-slow: 480ms;
+}

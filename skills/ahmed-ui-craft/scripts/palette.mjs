@@ -10,6 +10,7 @@
 //   --tint     neutral chroma, 0 = pure gray, 0.02 = clearly tinted
 import { contrast, oklchToLinear } from "./contrast.mjs";
 import { check } from "./check-tokens.mjs";
+import { pathToFileURL } from "node:url";
 
 const fmt = ([L, C, H]) => `oklch(${(L * 100).toFixed(1)}% ${C.toFixed(3)} ${Math.round(H)})`;
 const inGamut = (L, C, H) => oklchToLinear(L, C, H).every((x) => x >= -0.0005 && x <= 1.0005);
@@ -18,6 +19,13 @@ const inGamut = (L, C, H) => oklchToLinear(L, C, H).every((x) => x >= -0.0005 &&
 function fit(L, C, H) {
   while (C > 0 && !inGamut(L, C, H)) C -= 0.002;
   return [L, Math.max(0, C), H];
+}
+
+// Lightness where this hue reaches its highest in-gamut chroma (yellows ~0.9, blues ~0.45)
+function cusp(H) {
+  let best = [0.6, 0];
+  for (let L = 0.3; L <= 0.95; L += 0.01) { const [, c] = fit(L, 0.4, H); if (c > best[1]) best = [L, c]; }
+  return best[0];
 }
 
 // Walk lightness from `from` toward `to` until ok(color) holds; returns the first passing color
@@ -53,10 +61,13 @@ export function palette({ hue, accent, accentChroma = 0.19, tint = 0.012, onAcce
     o.borderStrong = fmt(solve(...toward(lighter ? 0.4 : 0.7), tint * 1.4, hue, passes(UI, s.bg, s.raised)));
 
     // Accent fill and its label
-    const label = mode === "light" ? (darkLabel ? n(0.18) : fmt([1, 0, 0])) : dark.bg;
-    const labelIsDark = mode === "dark" || darkLabel;
-    // Start at a vivid lightness and move away from the label until it reads: keeps accents bright, not muddy
-    const accentFill = solve(0.72, labelIsDark ? 0.98 : 0.2, accentChroma, accent, passes(T, label));
+    // --on-accent light/dark applies to both themes; auto uses a dark label in dark mode
+    const labelIsDark = mode === "dark" ? onAccent !== "light" : darkLabel;
+    const label = labelIsDark ? (mode === "light" ? n(0.18) : dark.bg) : fmt([1, 0, 0]);
+    // Start at the hue's most vivid lightness and move away from the label until it reads,
+    // so yellows stay acid and blues stay deep instead of everything landing at a muddy middle
+    const vivid = Math.min(0.9, Math.max(0.55, cusp(accent)));
+    const accentFill = solve(labelIsDark ? vivid : Math.min(vivid, 0.72), labelIsDark ? 0.98 : 0.2, accentChroma, accent, passes(T, label));
     o.accent = fmt(accentFill);
     // Hover: one step darker when that still passes, otherwise the nearest passing lightness
     o.accentHover = fmt(solve(accentFill[0] - 0.06, labelIsDark ? 0.98 : 0.15, accentChroma, accent, passes(T, label)));
@@ -84,15 +95,16 @@ export function toCss(p, comment = "") {
   return `${comment ? `/* ${comment} */\n` : ""}:root {\n${lines.join("\n")}\n}\n`;
 }
 
-const argv = process.argv.slice(2);
+const isMain = import.meta.url === pathToFileURL(process.argv[1] ?? "").href;
+const argv = isMain ? process.argv.slice(2) : ["--imported"];
 const opt = (name, dflt) => { const i = argv.indexOf(`--${name}`); return i >= 0 ? argv[i + 1] : dflt; };
 
 if (argv[0] === "--test") {
   let n = 0;
-  for (const hue of [0, 60, 140, 250, 300]) for (let accent = 0; accent < 360; accent += 15) {
-    const rows = check(toCss(palette({ hue, accent })));
+  for (const onAccent of ["auto", "light", "dark"]) for (const hue of [0, 60, 140, 250, 300]) for (let accent = 0; accent < 360; accent += 15) {
+    const rows = check(toCss(palette({ hue, accent, onAccent })));
     const bad = rows.filter((r) => !r.ok);
-    console.assert(rows.length === 30 && !bad.length, `hue ${hue} accent ${accent}: ${bad.map((r) => r.fg + "/" + r.theme).join(", ")}`);
+    console.assert(rows.length === 30 && !bad.length, `${onAccent} hue ${hue} accent ${accent}: ${bad.map((r) => r.fg + "/" + r.theme).join(", ")}`);
     n++;
   }
   console.log(`ok (${n} palettes, all 30 pairs each)`);
@@ -106,6 +118,6 @@ if (argv[0] === "--test") {
   if (bad.length) { console.error("Unexpected failures:", bad); process.exit(1); }
   process.stdout.write(css);
   if (argv.includes("--dark-first")) process.stdout.write(`:root { color-scheme: dark; } /* dark by default; [data-theme="light"] opts in */\n`);
-} else {
+} else if (argv[0] !== "--imported") {
   console.log("Usage: node palette.mjs --hue <0-360> --accent <0-360> [--accent-chroma 0.19] [--tint 0.012] [--on-accent auto|light|dark] [--dark-first]\n       node palette.mjs --test");
 }

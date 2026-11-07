@@ -27,11 +27,17 @@ const PAIRS = [
 ];
 
 export function parseTokens(css) {
-  const tokens = {};
   const noComments = css.replace(/\/\*[\s\S]*?\*\//g, "");
-  for (const m of noComments.matchAll(/(--[\w-]+)\s*:\s*([^;{}]+)(?=[;}])/g)) {
-    if (!(m[1] in tokens)) tokens[m[1]] = m[2].trim(); // first definition = the base theme block
+  const decls = (body) => [...body.matchAll(/(--[\w-]+)\s*:\s*([^;{}]+)(?=[;}])/g)];
+  // Base theme = declarations in plain :root / html / @theme blocks; later ones win, like the cascade.
+  // Dark overrides ([data-theme], media queries) are skipped: dark values come from light-dark().
+  const tokens = {};
+  for (const [, selector, body] of noComments.matchAll(/([^{}]*)\{([^{}]*)\}/g)) {
+    if (/^(:root|html|@theme(\s+inline)?)$/.test(selector.trim())) {
+      for (const m of decls(body + ";")) tokens[m[1]] = m[2].trim();
+    }
   }
+  if (!Object.keys(tokens).length) for (const m of decls(noComments)) tokens[m[1]] ??= m[2].trim();
   return tokens;
 }
 
@@ -86,6 +92,8 @@ if (!isMain) {
   const r = check(css);
   console.assert(r.length === 2 && r.every((x) => Math.abs(x.ratio - 21) < 0.01), "light-dark resolves per theme");
   console.assert(check(`:root{--color-text:#777;--color-bg:#fff}`)[0].ok === false, "#777 on white fails 4.5");
+  const over = `:root{--color-text:#777;--color-bg:#fff} :root[data-theme="dark"]{--color-text:#fff} :root{--color-text:#000}`;
+  console.assert(check(over).every((x) => Math.abs(x.ratio - 21) < 0.01), "later :root wins, dark override block ignored");
   console.log("ok");
 } else if (args.length) {
   let failed = 0;

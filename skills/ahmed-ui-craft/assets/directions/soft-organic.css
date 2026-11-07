@@ -1,0 +1,35 @@
+/* Direction preset: Soft / organic. See references/directions.md for its signature moves.
+ * Load after assets/tokens.css; it overrides colors, fonts, radius, shadow, and motion.
+ * Fonts: <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Figtree:wght@400;600&display=swap">
+ * Colors: node scripts/palette.mjs --hue 70 --accent 40 --tint 0.02 --accent-chroma 0.12
+ * Starting point, not a finished brand: shift the hues to fit the product. Re-check with check-tokens.mjs.
+ */
+:root {
+  --color-bg: light-dark(oklch(98.5% 0.010 70), oklch(15.0% 0.020 70));
+  --color-surface: light-dark(oklch(96.0% 0.016 70), oklch(20.0% 0.020 70));
+  --color-surface-raised: light-dark(oklch(100.0% 0.000 0), oklch(26.0% 0.020 70));
+  --color-text: light-dark(oklch(20.0% 0.020 70), oklch(95.0% 0.012 70));
+  --color-text-muted: light-dark(oklch(53.5% 0.028 70), oklch(64.0% 0.028 70));
+  --color-border: light-dark(oklch(86.0% 0.020 70), oklch(33.0% 0.020 70));
+  --color-border-strong: light-dark(oklch(65.0% 0.028 70), oklch(54.5% 0.028 70));
+  --color-inverse-surface: light-dark(oklch(20.0% 0.020 70), oklch(95.0% 0.012 70));
+  --color-on-inverse: light-dark(oklch(96.0% 0.016 70), oklch(20.0% 0.020 70));
+  --color-accent: light-dark(oklch(57.3% 0.120 40), oklch(68.0% 0.120 40));
+  --color-accent-hover: light-dark(oklch(51.3% 0.120 40), oklch(62.0% 0.120 40));
+  --color-on-accent: light-dark(oklch(100.0% 0.000 0), oklch(15.0% 0.020 70));
+  --color-accent-text: light-dark(oklch(55.0% 0.120 40), oklch(60.0% 0.120 40));
+  --color-success: light-dark(oklch(53.5% 0.140 150), oklch(65.0% 0.140 150));
+  --color-warning: light-dark(oklch(55.0% 0.118 70), oklch(65.0% 0.140 70));
+  --color-danger: light-dark(oklch(55.0% 0.190 27), oklch(65.0% 0.190 27));
+  --color-focus: light-dark(oklch(57.3% 0.120 40), oklch(68.0% 0.120 40));
+}
+
+:root {
+  --font-display: "Bricolage Grotesque", "Trebuchet MS", sans-serif;
+  --font-body: "Figtree", "Segoe UI", sans-serif;
+  --font-mono: ui-monospace, "Cascadia Code", monospace;
+  --radius-sm: 0.5rem; --radius-md: 1rem; --radius-lg: 1.75rem;
+  --shadow-sm: 0 2px 6px var(--shadow-color); --shadow-md: 0 6px 24px var(--shadow-color); --shadow-lg: 0 18px 48px var(--shadow-color);
+  --border-width: 1px; --leading-tight: 1.08; --tracking-tight: -0.015em;
+  --ease-out: cubic-bezier(0.34, 1.3, 0.64, 1); --dur-base: 280ms; --dur-slow: 420ms;
+}

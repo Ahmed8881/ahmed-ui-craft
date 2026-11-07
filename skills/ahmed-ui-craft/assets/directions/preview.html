@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Direction presets preview</title>
+<!-- Open this file in a browser. Pick a direction and theme; the sample UI uses only tokens. -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="../tokens.css" />
+<link rel="stylesheet" id="preset" href="industrial.css" />
+<link rel="stylesheet" id="fonts" href="" />
+<style>
+  .wrap { width: min(100% - 2 * var(--gutter), var(--container-max)); margin-inline: auto; padding-block: var(--space-6); display: grid; gap: var(--space-7); }
+  .controls { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: end; }
+  .controls label { display: grid; gap: var(--space-1); font-size: var(--text-sm); font-weight: 600; }
+  select, .input { min-height: var(--tap-min); padding-inline: var(--space-3); font: inherit; color: var(--color-text);
+    background: var(--color-surface-raised); border: var(--border-width, 1px) solid var(--color-border-strong); border-radius: var(--radius-sm); }
+  .eyebrow { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-caps); text-transform: uppercase; color: var(--color-accent-text); margin: 0; }
+  h1 { font-size: var(--text-display); margin: var(--space-3) 0 var(--space-4); max-width: 18ch; hyphens: manual; }
+  .lede { font-size: var(--text-lg); color: var(--color-text-muted); max-width: var(--measure); margin: 0; }
+  .actions { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-5); }
+  .btn { display: inline-flex; align-items: center; min-height: var(--tap-min); padding-inline: var(--space-5); font: 600 var(--text-sm) / 1 var(--font-body);
+    border: var(--border-width, 1px) solid transparent; border-radius: var(--radius-sm); cursor: pointer; box-shadow: var(--shadow-sm);
+    transition: background-color var(--dur-fast) var(--ease-out), transform var(--dur-instant) var(--ease-out); }
+  .btn-primary { background: var(--color-accent); color: var(--color-on-accent); }
+  .btn-secondary { background: transparent; color: var(--color-text); border-color: var(--color-border-strong); }
+  @media (hover: hover) { .btn-primary:hover { background: var(--color-accent-hover); } .btn-secondary:hover { background: var(--color-surface); } }
+  .btn:active { transform: translateY(1px); }
+  .grid { display: grid; gap: var(--space-5); }
+  @media (min-width: 48rem) { .grid { grid-template-columns: 7fr 5fr; } }
+  .card { padding: var(--space-5); background: var(--color-surface); border: var(--border-width, 1px) solid var(--color-border); border-radius: var(--radius-md); box-shadow: var(--shadow-md); display: grid; gap: var(--space-3); }
+  .card.inverse { background: var(--color-inverse-surface); color: var(--color-on-inverse); border-color: transparent; }
+  .stat { font-family: var(--font-display); font-size: var(--text-4xl); line-height: var(--leading-tight); font-variant-numeric: tabular-nums; margin: 0; }
+  .field { display: grid; gap: var(--space-2); }
+  .field label { font-weight: 600; font-size: var(--text-sm); }
+  .input[aria-invalid="true"] { border-color: var(--color-danger); }
+  .error { color: var(--color-danger); font-size: var(--text-sm); margin: 0; }
+  .badges { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+  .badge { font-size: var(--text-xs); font-weight: 600; padding: var(--space-1) var(--space-2); border: 1px solid currentColor; border-radius: var(--radius-full); }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <form class="controls" aria-label="Preview settings">
+    <label>Direction
+      <select id="dir">
+        <option value="editorial">Editorial</option><option value="brutalist">Brutalist</option>
+        <option value="soft-organic">Soft / organic</option><option value="industrial" selected>Industrial / technical</option>
+        <option value="luxury">Luxury</option><option value="playful">Playful</option><option value="swiss">Swiss minimal</option>
+      </select>
+    </label>
+    <label>Theme
+      <select id="theme"><option value="">Follow system</option><option value="light">Light</option><option value="dark">Dark</option></select>
+    </label>
+  </form>
+
+  <header>
+    <p class="eyebrow">01 / Close the books</p>
+    <h1>Month-end in two days, not ten.</h1>
+    <p class="lede">Ledgerly reconciles client retainers, contractor invoices, and project budgets while the month is still open.</p>
+    <div class="actions">
+      <a class="btn btn-primary" href="#">Start 14-day trial</a>
+      <a class="btn btn-secondary" href="#">See a sample close</a>
+    </div>
+  </header>
+
+  <section class="grid" aria-label="Sample components">
+    <div class="card">
+      <h2>Invoice reminders</h2>
+      <p>Overdue clients get a polite nudge on day 3 and a firmer one on day 10. You approve the wording once.</p>
+      <div class="field">
+        <label for="email">Billing email</label>
+        <input class="input" id="email" type="email" value="finance@" aria-invalid="true" aria-describedby="email-err" />
+        <p class="error" id="email-err">Enter a full address, like finance@studio.com.</p>
+      </div>
+      <div class="badges">
+        <span class="badge" style="color: var(--color-success)">Paid</span>
+        <span class="badge" style="color: var(--color-warning)">Due in 3 days</span>
+        <span class="badge" style="color: var(--color-danger)">Overdue</span>
+      </div>
+    </div>
+    <div class="card inverse">
+      <p class="eyebrow" style="color: inherit">Closed this month</p>
+      <p class="stat">$184,920</p>
+      <p>Across 38 clients, 2 days ahead of last month.</p>
+    </div>
+  </section>
+</main>
+<script>
+  const dir = document.getElementById("dir"), theme = document.getElementById("theme");
+  async function apply() {
+    document.getElementById("preset").href = `${dir.value}.css`;
+    try {
+      const css = await (await fetch(`${dir.value}.css`)).text();
+      const m = css.match(/href="(https:\/\/fonts\.googleapis\.com[^"]+)"/);
+      document.getElementById("fonts").href = m ? m[1] : "";
+    } catch { /* file:// blocks fetch in some browsers; fonts fall back to the stack */ }
+    if (theme.value) document.documentElement.dataset.theme = theme.value;
+    else delete document.documentElement.dataset.theme;
+  }
+  dir.onchange = theme.onchange = apply;
+  apply();
+</script>
+</body>
+</html>
