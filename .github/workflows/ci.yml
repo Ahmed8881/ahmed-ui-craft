@@ -1,0 +1,57 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  skill:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Skill structure and manifests
+        run: node .github/lint-skill.mjs
+
+      - name: Script self-tests
+        working-directory: skills/ahmed-ui-craft
+        run: |
+          node scripts/contrast.mjs --test
+          node scripts/check-tokens.mjs --test
+          node scripts/palette.mjs --test
+
+      - name: Starter tokens and presets pass WCAG AA in light and dark
+        working-directory: skills/ahmed-ui-craft
+        run: node scripts/check-tokens.mjs assets/tokens.css assets/directions/*.css
+
+      - name: Audit passes on the skill's own assets
+        run: bash skills/ahmed-ui-craft/scripts/audit.sh skills/ahmed-ui-craft/assets
+
+      - name: Audit still catches known-bad output
+        run: |
+          if bash skills/ahmed-ui-craft/scripts/audit.sh evals/runs/baseline/login.html; then
+            echo "audit.sh passed a page it must flag"; exit 1
+          fi
+
+  browser:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install Playwright and axe-core
+        run: |
+          npm i --no-save playwright @axe-core/playwright
+          npx playwright install --with-deps chromium
+      - name: Preset preview renders cleanly
+        run: node skills/ahmed-ui-craft/scripts/browser-check.mjs skills/ahmed-ui-craft/assets/directions/preview.html --out ui-check
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: screenshots
+          path: ui-check/

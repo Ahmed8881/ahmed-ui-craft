@@ -8,7 +8,7 @@
 import { createServer } from "node:http";
 import { createRequire } from "node:module";
 import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
-import { dirname, extname, join, resolve, basename } from "node:path";
+import { dirname, extname, join, relative, resolve, sep } from "node:path";
 
 const argv = process.argv.slice(2);
 const opt = (k, d) => { const i = argv.indexOf(`--${k}`); return i >= 0 ? argv[i + 1] : d; };
@@ -32,7 +32,9 @@ let server, url = target;
 if (!/^https?:\/\//.test(target)) {
   const file = resolve(target);
   if (!existsSync(file)) { console.error(`Not found: ${file}`); process.exit(2); }
-  const root = statSync(file).isDirectory() ? file : dirname(file);
+  // Serve from the working directory when the page is inside it, so links like ../tokens.css resolve
+  const cwd = process.cwd();
+  const root = file.startsWith(cwd + sep) ? cwd : statSync(file).isDirectory() ? file : dirname(file);
   const types = { ".html": "text/html", ".css": "text/css", ".js": "text/javascript", ".mjs": "text/javascript", ".svg": "image/svg+xml", ".png": "image/png", ".jpg": "image/jpeg", ".webp": "image/webp", ".woff2": "font/woff2", ".json": "application/json" };
   server = createServer((q, r) => {
     const p = join(root, decodeURIComponent(q.url.split("?")[0]));
@@ -41,7 +43,7 @@ if (!/^https?:\/\//.test(target)) {
     r.end(readFileSync(p));
   });
   await new Promise((ok) => server.listen(0, "127.0.0.1", ok));
-  url = `http://127.0.0.1:${server.address().port}/${statSync(file).isDirectory() ? "" : basename(file)}`;
+  url = `http://127.0.0.1:${server.address().port}/${relative(root, file).split(sep).map(encodeURIComponent).join("/")}`;
 }
 
 async function launch() {
