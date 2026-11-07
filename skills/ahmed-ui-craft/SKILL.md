@@ -170,6 +170,30 @@ token contrast), then, if Playwright is available or the user agrees to install 
 in comments are claims, not measurements; compute them. Do not report the work as done with known failures; if something cannot
 be fixed (for example, a brand color that fails contrast), say so explicitly.
 
+## Multi-agent mode (when a subagent tool is available)
+
+The main agent always does Steps 0-4 itself: thinking and building need the same
+context, and splitting them loses what Step 0 found. Use subagents at two points only:
+
+1. **Direction proposals (Step 2, open-ended briefs only).** If there is no brand,
+   screenshot, or existing design system, launch 2-3 subagents in parallel. Give each
+   the Step 1 lines and assign each a *different* direction from the table. Each returns
+   only: direction, font pair, accent + neutral hue, differentiator, two signature moves.
+   Pick one (or show the user the options), then continue alone.
+   Why: one agent converges on the average; forced different starting points do not.
+   Skip this when the brand already sets the direction.
+
+2. **Independent review (Step 5, always for new pages or screens).** After your own audit
+   passes, launch one fresh subagent that did not write the code. Give it the changed
+   files, the Step 1 lines, and the chosen direction, and ask it to: read
+   `references/anti-patterns.md`, run `scripts/audit.sh`, and list every place the UI
+   looks generic, misses a state, or breaks the direction. It reports, it does not edit.
+   Fix what it finds.
+   Why: the builder judges the result by what it meant to make, not by what is on screen.
+
+No subagent tool: do both passes yourself, in order. For the review, re-read the files
+as if someone else wrote them.
+
 ## Quality rules (and why)
 
 **Typography**
