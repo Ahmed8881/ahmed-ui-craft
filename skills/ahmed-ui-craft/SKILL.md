@@ -90,7 +90,7 @@ identical. That is a new default, which is the problem this skill exists to fix.
 Keep them only if the direction really is warm editorial with a red-orange accent.
 
 For dark-first directions (monitoring dashboards, developer tools, luxury night
-themes), put the dark values in the main theme block and the light ones in the override.
+themes), set `:root { color-scheme: dark; }` so dark is the default and light is opt-in.
 
 Why: tokens make the direction enforceable. A hard-coded `#6366f1` or `13px`
 in a component is a decision made in isolation, and twenty of those make the
@@ -101,7 +101,8 @@ Rules:
   (`--color-text`, `--color-accent`, `--color-surface`). Components use only semantic tokens.
 - **No magic numbers in components**. Every color, size, gap, radius, shadow,
   duration, and z-index comes from a token. Exceptions: `0`, `1px` hairlines, `100%`, and `1fr`.
-- **Dark mode**: redefine the semantic layer, never the components. See `references/color-and-theming.md`.
+- **Dark mode**: every semantic color is `light-dark(LIGHT, DARK)`, so both themes live in one
+  declaration and components never change. See `references/color-and-theming.md`.
 
 **Tailwind**: make the tokens the theme, so `bg-surface`, `text-text-muted`,
 `font-display`, and `rounded-md` exist and `bg-indigo-500` does not.
@@ -109,8 +110,8 @@ Rules:
 - **v4**: the second block in `assets/tokens.css` already uses Tailwind's namespaces
   (`--color-*`, `--font-*`, `--text-*`, `--radius-*`, `--shadow-*`, `--ease-*`).
   Change that block's `:root` to `@theme` and add `--color-*: initial;` as its first
-  line to drop the default palette. Keep the dark-mode block as plain CSS: it
-  overrides the same variables, and utilities pick that up because they reference `var(--color-*)`.
+  line to drop the default palette. Keep block 3 (`color-scheme`) as plain CSS. Utilities
+  resolve `light-dark()` per theme, because they reference `var(--color-*)`.
   Do not write `@theme inline { --color-x: var(--color-x) }`; a variable that
   references its own name is a cycle and resolves to nothing.
 - **v3**: in `tailwind.config`, set `theme.colors` (not `extend`) to

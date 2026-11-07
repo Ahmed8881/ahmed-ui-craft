@@ -64,25 +64,30 @@ Components never reference raw colors. They reference roles:
 
 ## 4. Dark mode
 
-Dark mode is a second set of values for the same semantic tokens. It is not
-`filter: invert()` and not "swap black and white".
+Dark mode is a second value for the same semantic tokens. It is not
+`filter: invert()` and not "swap black and white". Write both values in one
+declaration with `light-dark()` (supported in all major browsers since 2024):
 
 ```css
-:root[data-theme="dark"] {
-  color-scheme: dark;                         /* native scrollbars and form controls */
-  --color-bg: oklch(15% 0.01 60);             /* near-black, tinted; not #000 */
-  --color-surface: oklch(20% 0.012 60);       /* raise surfaces by lightening, not by shadow */
-  --color-text: oklch(95% 0.01 85);           /* off-white; pure white glares */
-  --color-accent: oklch(70% 0.17 38);         /* lighter, slightly less chroma than light mode */
-  --color-on-accent: oklch(15% 0.01 60);
+:root {
+  color-scheme: light dark;                                   /* follow the OS; required by light-dark() */
+  --color-bg: light-dark(oklch(98.5% 0.006 85), oklch(15% 0.01 60));   /* dark: tinted near-black, not #000 */
+  --color-surface: light-dark(oklch(96% 0.01 85), oklch(20% 0.012 60)); /* dark: raise by lightening */
+  --color-text: light-dark(oklch(20% 0.012 60), oklch(95% 0.01 85));    /* dark: off-white, pure white glares */
+  --color-accent: light-dark(oklch(54% 0.19 33), oklch(70% 0.17 38));   /* dark: lighter, a bit less chroma */
 }
+:root[data-theme="light"] { color-scheme: light; }            /* explicit user choice wins */
+:root[data-theme="dark"]  { color-scheme: dark; }
 ```
+
+Why: with separate light and dark blocks, the dark values live 80 lines away
+from the light ones and drift. One declaration per token keeps them reviewed together.
+Older browsers need the fallback: a `:root[data-theme="dark"]` block that redefines the tokens.
 
 Rules:
 - Elevation in dark mode = lighter surface. Shadows are barely visible on dark backgrounds.
 - Desaturate and lighten accents; light-mode accents vibrate on dark backgrounds.
-- Support both: follow `prefers-color-scheme` by default, let `data-theme` override it
-  (see `assets/tokens.css`).
+- Dark-first product (monitoring, dev tools)? `:root { color-scheme: dark; }` as the default.
 - Avoid a flash of the wrong theme: set `data-theme` in a tiny inline script in `<head>`
   before CSS paints, reading the user's saved choice.
 
