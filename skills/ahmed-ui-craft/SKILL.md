@@ -150,7 +150,7 @@ plausible content that fits the purpose from Step 1.
 ## Step 5 - Audit before delivering
 
 Run every item in `scripts/audit.md`, including its grep commands and the
-contrast measurement (`scripts/contrast.mjs`), and fix what fails. Ratios written
+contrast measurement (`scripts/check-tokens.mjs`), and fix what fails. Ratios written
 in comments are claims, not measurements; compute them. Do not report the work as done with known failures; if something cannot
 be fixed (for example, a brand color that fails contrast), say so explicitly.
 
@@ -227,7 +227,8 @@ Read only the files the task needs. Each is short and code-first.
 - `references/anti-patterns.md` - the generic-AI look itemized, with the fix for each. Read before you start and again before you finish.
 - `assets/tokens.css` - starter tokens with light and dark themes. Copy, then change values to match the direction.
 - `scripts/audit.md` - the pre-delivery checklist. Always run it.
-- `scripts/contrast.mjs` - `node scripts/contrast.mjs "<fg>" "<bg>"` prints the WCAG ratio for `#hex` or `oklch()` colors.
+- `scripts/check-tokens.mjs` - `node scripts/check-tokens.mjs <tokens.css>` measures every semantic text/background pair in light and dark. Run it whenever you change color tokens.
+- `scripts/contrast.mjs` - `node scripts/contrast.mjs "<fg>" "<bg>"` prints the WCAG ratio for one `#hex` or `oklch()` pair.
 
 ## Output format
 

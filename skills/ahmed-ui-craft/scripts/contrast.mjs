@@ -2,6 +2,8 @@
 // WCAG 2.x contrast ratio for two colors. Accepts #rgb, #rrggbb, or oklch(L% C H).
 // Usage: node contrast.mjs "#1f1a17" "oklch(98.5% 0.006 85)"
 //        node contrast.mjs --test
+import { pathToFileURL } from "node:url";
+
 const lin = (v) => (v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4);
 
 function toLinearRgb(input) {
@@ -34,8 +36,11 @@ export function contrast(a, b) {
   return (hi + 0.05) / (lo + 0.05);
 }
 
-const args = process.argv.slice(2);
-if (args[0] === "--test") {
+const isMain = import.meta.url === pathToFileURL(process.argv[1] ?? "").href;
+const args = isMain ? process.argv.slice(2) : null;
+if (!args) {
+  // imported as a module: no CLI
+} else if (args[0] === "--test") {
   const near = (x, y) => Math.abs(x - y) < 0.05;
   console.assert(near(contrast("#000", "#fff"), 21), "black/white = 21");
   console.assert(near(contrast("#777", "#fff"), 4.48), "#777/white = 4.48");

@@ -53,11 +53,13 @@ $G -l "animation|transition|framer-motion|gsap" $T >/dev/null && ! $G -q "prefer
 $G "target=[\"']_blank[\"'](?![^>]*\brel=)" $T
 ```
 
-Then measure contrast for every text/background pair you defined, in every theme.
-Do not copy ratios from comments; compute them:
+Then measure contrast in every theme. Do not copy ratios from comments; compute them.
+`check-tokens.mjs` reads your tokens file (or the page with inline tokens), resolves
+`var()` and `light-dark()`, and checks 15 semantic pairs per theme. It exits 1 on any failure:
 
 ```bash
-node scripts/contrast.mjs "oklch(46% 0.016 60)" "oklch(98.5% 0.006 85)"   # -> 6.85:1  AA
+node scripts/check-tokens.mjs styles/tokens.css        # or the .html file with inline tokens
+node scripts/contrast.mjs "oklch(46% 0.016 60)" "#fbf8f3"   # one-off pair, e.g. a chart color
 ```
 
 (Path is relative to this skill's folder. Accepts `#hex` and `oklch()`. Alpha is ignored:
